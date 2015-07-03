@@ -1,0 +1,5 @@
+.idea/
+.setting
+*.zip
+.DS_Store
+target/
