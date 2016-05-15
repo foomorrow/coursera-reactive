@@ -113,7 +113,6 @@ class Step5_PrimaryPersistenceSpec extends TestKit(ActorSystem("Step5PrimaryPers
     val setId = client.set("foo", "bar")
     val seqA = secondaryA.expectMsgType[Snapshot].seq
     val seqB = secondaryB.expectMsgType[Snapshot].seq
-    println(secondaryA,secondaryB)
     client.nothingHappens(300.milliseconds)
     secondaryA.reply(SnapshotAck("foo", seqA))
     client.nothingHappens(300.milliseconds)

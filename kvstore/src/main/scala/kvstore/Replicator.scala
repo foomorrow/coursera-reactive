@@ -3,7 +3,6 @@ package kvstore
 import akka.actor.Props
 import akka.actor.Actor
 import akka.actor.ActorRef
-import kvstore.Persistence.Persisted
 import scala.concurrent.duration._
 
 object Replicator {
@@ -40,23 +39,7 @@ class Replicator(val replica: ActorRef) extends Actor {
   
   /* TODO Behavior for the Replicator. */
   def receive: Receive = {
-    case Replicate(key,valueOption,id) => {
-      replica ! Snapshot(key,valueOption,id)
-      acks += id -> (replica,Replicate(key,valueOption,id))
-      context.system.scheduler.scheduleOnce(200.milliseconds) {
-        if(!acks.get(id).isEmpty){
-          self ! Replicate(key, valueOption, id)
-        }
-      }
-    }
-    case SnapshotAck(key,seq) => {
-      acks.get(seq) match {
-        case Some(a) => a._1 ! Replicated(key,seq)
-        case None =>
-      }
-      acks -= seq
-//      sender ! Replicated(key,seq)
-    }
+    case _ =>
   }
 
 }

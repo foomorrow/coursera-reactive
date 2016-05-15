@@ -141,8 +141,8 @@ class BinaryTreeNode(val elem: Int, initiallyRemoved: Boolean) extends Actor {
       removed = true
       req ! OperationFinished(id)
     }
-    case Remove(req, id, el) if (el < elem&&subtrees.isDefinedAt(Left)) => subtrees(Left) ! Remove(req,id,el)
-    case Remove(req, id, el) if (el > elem&&subtrees.isDefinedAt(Right)) => subtrees(Right) ! Remove(req,id,el)
+    case Remove(req, id, el) if (el < elem && subtrees.isDefinedAt(Left)) => subtrees(Left) ! Remove(req,id,el)
+    case Remove(req, id, el) if (el > elem && subtrees.isDefinedAt(Right)) => subtrees(Right) ! Remove(req,id,el)
     case Remove(req, id, el) => req ! OperationFinished(id)
     case Contains(req, id, el) if (el == elem) => req ! ContainsResult(id, !removed)
     case Contains(req, id, el) if (el < elem && subtrees.isDefinedAt(Left)) => subtrees(Left) ! Contains(req, id, el)
@@ -184,6 +184,4 @@ class BinaryTreeNode(val elem: Int, initiallyRemoved: Boolean) extends Actor {
       else context.become(copying(newSet, insertConfirmed))
     }
   }
-
-
 }

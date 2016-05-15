@@ -31,7 +31,6 @@ class Arbiter extends Actor {
         sender ! JoinedSecondary
       }
       leader foreach (_ ! Replicas(replicas))
-
   }
 
 }
