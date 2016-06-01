@@ -105,12 +105,12 @@ class Replica(val arbiter: ActorRef, persistenceProps: Props) extends Actor {
       replicators -= self
     }
     case Insert(key, value, id) => {
-      kv += key -> value
       lastReq = Some((key, Some(value), id))
       replicators = secondaries.values.toSet + self
       val s = sender
       context.system.scheduler.scheduleOnce(1.seconds) {
         if (replicators.isEmpty) {
+          kv += key -> value
           s ! OperationAck(id)
         } else {
           s ! OperationFailed(id)
@@ -119,12 +119,12 @@ class Replica(val arbiter: ActorRef, persistenceProps: Props) extends Actor {
       }
     }
     case Remove(key, id) => {
-      kv -= key
       lastReq = Some((key, None, id))
       replicators = secondaries.values.toSet + self
       val s = sender
       context.system.scheduler.scheduleOnce(1.seconds) {
         if (replicators.isEmpty) {
+          kv -= key
           s ! OperationAck(id)
         } else {
           s ! OperationFailed(id)
