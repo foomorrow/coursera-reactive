@@ -36,9 +36,28 @@ class Replicator(val replica: ActorRef) extends Actor {
     ret
   }
 
+  context.system.scheduler.schedule(0.milliseconds, 100.milliseconds){
+    acks.foreach{
+      case (seq, (s, Replicate(key, valueOption, id))) => {
+        replica ! Snapshot(key, valueOption, seq)
+      }
+    }
+  }
   
   /* TODO Behavior for the Replicator. */
   def receive: Receive = {
+    case Replicate(key, valueOption, id) => {
+      acks += nextSeq -> (sender, Replicate(key, valueOption, id))
+    }
+    case SnapshotAck(key, seq) => {
+      acks.get(seq) match {
+        case Some((s, Replicate(key, valueOption, id))) => {
+          s ! Replicated(key, id)
+        }
+      }
+      acks -= seq
+
+    }
     case _ =>
   }
 
